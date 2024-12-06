@@ -1,0 +1,1 @@
+# Chapter 6: Catalogs and Metadata Management
