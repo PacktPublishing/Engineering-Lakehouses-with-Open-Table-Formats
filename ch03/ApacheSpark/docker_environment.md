@@ -81,3 +81,5 @@ networks:
 ## To Run the container:
 - Navigate terminal to the same directory as the docker-compose.yaml
 - run `docker-compose up`
+
+After every service is up & running, upload the .ipynb file `Spark_Iceberg.ipynb` under `notebooks` folder in your environment and start running the code blocks!
