@@ -1,4 +1,4 @@
-Create a `docker-compose.yaml` file in your local environment with the following:
+## Create a `docker-compose.yaml` file in your local environment with the following:
 
 ```###########################################
 # Iceberg - Spark Setup
