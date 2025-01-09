@@ -1,0 +1,101 @@
+{
+  "format-version" : 2,
+  "table-uuid" : "9e290419-4cbd-4d66-94e9-fe41ed0f2b40",
+  "location" : "s3a://diplakehouse/iceberg_book/customers",
+  "last-sequence-number" : 1,
+  "last-updated-ms" : 1730678112032,
+  "last-column-id" : 6,
+  "current-schema-id" : 0,
+  "schemas" : [ {
+    "type" : "struct",
+    "schema-id" : 0,
+    "fields" : [ {
+      "id" : 1,
+      "name" : "customer_id",
+      "required" : false,
+      "type" : "int"
+    }, {
+      "id" : 2,
+      "name" : "first_name",
+      "required" : false,
+      "type" : "string"
+    }, {
+      "id" : 3,
+      "name" : "last_name",
+      "required" : false,
+      "type" : "string"
+    }, {
+      "id" : 4,
+      "name" : "email",
+      "required" : false,
+      "type" : "string"
+    }, {
+      "id" : 5,
+      "name" : "charges",
+      "required" : false,
+      "type" : "float"
+    }, {
+      "id" : 6,
+      "name" : "state",
+      "required" : false,
+      "type" : "string"
+    } ]
+  } ],
+  "default-spec-id" : 0,
+  "partition-specs" : [ {
+    "spec-id" : 0,
+    "fields" : [ {
+      "name" : "state",
+      "transform" : "identity",
+      "source-id" : 6,
+      "field-id" : 1000
+    } ]
+  } ],
+  "last-partition-id" : 1000,
+  "default-sort-order-id" : 0,
+  "sort-orders" : [ {
+    "order-id" : 0,
+    "fields" : [ ]
+  } ],
+  "properties" : {
+    "owner" : "docker",
+    "write.parquet.compression-codec" : "zstd"
+  },
+  "current-snapshot-id" : 2711640443788239783,
+  "refs" : {
+    "main" : {
+      "snapshot-id" : 2711640443788239783,
+      "type" : "branch"
+    }
+  },
+  "snapshots" : [ {
+    "sequence-number" : 1,
+    "snapshot-id" : 2711640443788239783,
+    "timestamp-ms" : 1730678112032,
+    "summary" : {
+      "operation" : "append",
+      "spark.app.id" : "local-1730674907177",
+      "added-data-files" : "5",
+      "added-records" : "5",
+      "added-files-size" : "8554",
+      "changed-partition-count" : "5",
+      "total-records" : "5",
+      "total-files-size" : "8554",
+      "total-data-files" : "5",
+      "total-delete-files" : "0",
+      "total-position-deletes" : "0",
+      "total-equality-deletes" : "0"
+    },
+    "manifest-list" : "s3a://diplakehouse/iceberg_book/customers/metadata/snap-2711640443788239783-1-6c04dac1-3311-41c5-ba36-eba1451bd89d.avro",
+    "schema-id" : 0
+  } ],
+  "statistics" : [ ],
+  "snapshot-log" : [ {
+    "timestamp-ms" : 1730678112032,
+    "snapshot-id" : 2711640443788239783
+  } ],
+  "metadata-log" : [ {
+    "timestamp-ms" : 1730676315257,
+    "metadata-file" : "s3a://diplakehouse/iceberg_book/customers/metadata/v1.metadata.json"
+  } ]
+}
