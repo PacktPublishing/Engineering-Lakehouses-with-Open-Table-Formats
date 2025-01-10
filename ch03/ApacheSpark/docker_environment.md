@@ -83,3 +83,7 @@ networks:
 - run `docker-compose up`
 
 After every service is up & running, upload the .ipynb file `Spark_Iceberg.ipynb` under `notebooks` folder in your environment and start running the code blocks!
+
+## If you want to setup your own infrastructure (and not use the Docker container), here are the Installation Pre-Requisites: 
+- Spark 3.x 
+- Java 
