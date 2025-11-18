@@ -1,0 +1,8 @@
+sourceFormat: HUDI
+targetFormats:
+  - ICEBERG
+datasets:
+  - tableBasePath: file:///tmp/hudi-dataset/people
+    tableName: people
+    partitionSpec:
+      city: VALUE
