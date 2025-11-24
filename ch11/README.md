@@ -1,1 +1,54 @@
 # Chapter 11: Real-World Lakehouse Use Cases
+
+## Scenario: Acme Manufacturing's Journey to an Iceberg-based Lakehouse
+
+Use the below Docker image:
+
+```
+###########################################
+# Notebook- Iceberg - Nessie Setup
+###########################################
+
+version: "3"
+
+services:
+  # Nessie Catalog Server Using In-Memory Store
+  nessie:
+    image: projectnessie/nessie:latest
+    container_name: nessie
+    networks:
+      iceberg:
+    ports:
+      - 19120:19120
+  # Minio Storage Server
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+      - MINIO_DOMAIN=storage
+      - MINIO_REGION_NAME=us-east-1
+      - MINIO_REGION=us-east-1
+    networks:
+      iceberg:
+    ports:
+      - 9001:9001
+      - 9000:9000
+    command: ["server", "/data", "--console-address", ":9001"]
+  # Dremio
+  dremio:
+    platform: linux/x86_64
+    image: dremio/dremio-oss:latest
+    ports:
+      - 9047:9047
+      - 31010:31010
+      - 32010:32010
+    container_name: dremio
+    environment:
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
+    networks:
+      iceberg:
+networks:
+  iceberg:
+```
