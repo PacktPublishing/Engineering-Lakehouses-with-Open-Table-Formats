@@ -1,6 +1,6 @@
 # Chapter 11: Real-World Lakehouse Use Cases
 
-## Scenario: Acme Manufacturing's Journey to an Iceberg-based Lakehouse
+## For Scenario: Acme Manufacturing's Journey to an Iceberg-based Lakehouse
 
 Use the below Docker image:
 
@@ -52,3 +52,6 @@ services:
 networks:
   iceberg:
 ```
+## For Scenario: Visionary Telecom’s ML Workflow Modernization with Delta Lake
+- Install Delta & MLFlow Lake using pip
+- Load the `.ipynb` file and execute the steps
