@@ -7,6 +7,6 @@ CREATE TABLE delta_uniform_table (
 USING DELTA
 TBLPROPERTIES (
   'delta.enableIcebergCompatV2' = 'true', 
-  'delta.universalFormat.enabledFormats' = 'iceberg
+  'delta.universalFormat.enabledFormats' = 'iceberg'
 )
 LOCATION 's3://my-delta-uniform-table/';
