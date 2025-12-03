@@ -1,0 +1,21 @@
+# Ignore Spark managed table data and Delta/Parquet artifacts
+notebooks/spark-warehouse/
+notebooks/delta-warehouse/
+warehouse/
+delta-warehouse/
+minio-data/
+*.parquet
+*.delta
+*.crc
+*.avro
+/tmp/
+!.gitkeep
+
+# Ignore checkpoints, temp, and other Spark streaming/Delta temp dirs
+**/.checkpoint/
+**/_delta_log/
+**/_spark_metadata/
+
+# Ignore Jupyter notebook checkpoints and Python cache
+.ipynb_checkpoints/
+__pycache__/

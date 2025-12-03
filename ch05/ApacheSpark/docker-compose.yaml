@@ -1,0 +1,14 @@
+services:
+  spark:
+    build: .
+    container_name: spark-delta
+    ports:
+      - 8888:8888
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./warehouse:/tmp/warehouse
+    command: start-notebook.sh --NotebookApp.token=''
+
+networks:
+  default:
+    driver: bridge
