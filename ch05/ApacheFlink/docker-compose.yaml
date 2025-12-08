@@ -1,0 +1,62 @@
+###########################################
+# Flink - Delta Lake - Local FS Setup
+###########################################
+
+services:
+  # Flink SQL Client
+  sql-client:
+    image: flink:1.18.0-scala_2.12-java11
+    networks:
+      delta-flink-net:
+    stdin_open: true
+    tty: true
+    depends_on:
+      - flink-jobmanager
+    command: ["bash", "-c", "tail -f /dev/null"]
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+    volumes:
+      - ./jars:/opt/flink/lib/delta
+      - ./warehouse:/warehouse
+      - ./scripts:/scripts
+
+
+  # Flink Job Manager
+  flink-jobmanager:
+    image: flink:1.18.0-scala_2.12-java11
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    networks:
+      delta-flink-net:
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+    volumes:
+      - ./jars:/opt/flink/lib/delta
+      - ./warehouse:/warehouse
+      - ./scripts:/scripts
+
+  # Flink Task Manager
+  flink-taskmanager:
+    image: flink:1.18.0-scala_2.12-java11
+    depends_on:
+      - flink-jobmanager
+    command: taskmanager
+    networks:
+      delta-flink-net:
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: 2
+    volumes:
+      - ./jars:/opt/flink/lib/delta
+      - ./warehouse:/warehouse
+      - ./scripts:/scripts
+
+networks:
+  delta-flink-net:
