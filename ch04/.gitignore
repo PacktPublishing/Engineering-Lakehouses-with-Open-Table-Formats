@@ -1,0 +1,12 @@
+# Temp scratch space
+tmp/
+**/tmp/
+
+# Notebook auto-generated folders
+**/.ipynb_checkpoints/
+
+# Spark/Hudi generated data
+**/spark-warehouse/
+**/metastore_db/
+**/checkpoint/
+derby.log
