@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  jupyter:
+    build: .
+    # image: quay.io/jupyter/pyspark-notebook:spark-3.5.0
+    container_name: hudi-spark-notebook
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    volumes:
+      - ./notebooks:/home/jovyan/work
