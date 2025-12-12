@@ -1,0 +1,18 @@
+{
+    "name": "globalmart-mysql-connector",
+    "config": {
+      "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+      "database.hostname": "mysql-primary",
+      "database.port": "3306",
+      "database.user": "debezium",
+      "database.password": "dbz_password",
+      "database.server.id": "5400",
+      "database.server.name": "globalmart",
+      "database.include.list": "retail",
+      "table.include.list": "retail.products",
+      "database.history.kafka.bootstrap.servers": "kafka:29092",
+      "database.history.kafka.topic": "schema-changes.retail",
+      "include.schema.changes": "true"
+    }
+  }
+  

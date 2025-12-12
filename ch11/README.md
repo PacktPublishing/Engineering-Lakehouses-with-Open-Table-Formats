@@ -1,57 +1,34 @@
 # Chapter 11: Real-World Lakehouse Use Cases
 
-## For Scenario: Acme Manufacturing's Journey to an Iceberg-based Lakehouse
+## Hudi CDC demo (GlobalMart)
 
-Use the below Docker image:
+Folder: `ch11/hudi`
 
-```
-###########################################
-# Notebook- Iceberg - Nessie Setup
-###########################################
+What's inside:
+- `docker-compose.yml` / `Dockerfile`: spin up Zookeeper, Kafka, MySQL (seeded), Debezium Connect, and a Jupyter+Spark image with Kafka+Hudi jars cached. Includes a `kafka-init` helper to create the CDC topic.
+- `notebooks/ch11_globalmart_hudi.ipynb`: two demo paths  
+  - Quick demo (no Kafka): seed/batch write → snapshot & changelog validators → CDC validation summary.  
+  - Full CDC: streaming read from Kafka → optional CDC pump → snapshot/changelog/validation.
+- `scripts/pump_mysql_changes.sh`: emits CDC sequences (product 201: insert→update→delete→reinsert; product 202: insert→update).
+- `connect/connectors/*` + `scripts/register_connector.sh`: Debezium MySQL connector and auto-registration script.
+- `.gitignore`: ignores local `data/`, `tmp/`, and notebook checkpoints.
 
-version: "3"
+How to run:
+1) `cd ch11/hudi && docker compose up --build -d`
+2) Open Jupyter: http://localhost:8888
+3) Quick demo: run seed (if empty) → optional batch demo → snapshot/changelog/validation cells.
+4) Full CDC: run the streaming cell (~60s), in another terminal run `docker compose exec mysql-primary bash /scripts/pump_mysql_changes.sh`, then snapshot/changelog/validation.
 
-services:
-  # Nessie Catalog Server Using In-Memory Store
-  nessie:
-    image: projectnessie/nessie:latest
-    container_name: nessie
-    networks:
-      iceberg:
-    ports:
-      - 19120:19120
-  # Minio Storage Server
-  minio:
-    image: minio/minio:latest
-    container_name: minio
-    environment:
-      - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=password
-      - MINIO_DOMAIN=storage
-      - MINIO_REGION_NAME=us-east-1
-      - MINIO_REGION=us-east-1
-    networks:
-      iceberg:
-    ports:
-      - 9001:9001
-      - 9000:9000
-    command: ["server", "/data", "--console-address", ":9001"]
-  # Dremio
-  dremio:
-    platform: linux/x86_64
-    image: dremio/dremio-oss:latest
-    ports:
-      - 9047:9047
-      - 31010:31010
-      - 32010:32010
-    container_name: dremio
-    environment:
-      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
-    networks:
-      iceberg:
-networks:
-  iceberg:
-```
-## For Scenario: Visionary Telecom’s ML Workflow Modernization with Delta Lake
-- Install Delta & MLFlow Lake using pip
-- Load the `.ipynb` file and execute the steps
+## Iceberg demo
+
+Folder: `ch11/iceberg`
+
+What's inside:
+- `dremio-iceberg-nessie.sql`: SQL to configure Dremio with Nessie + MinIO for Iceberg.
+- `Visionary_Telecom_Delta_MLFlow.ipynb`: notebook showing a lakehouse ML workflow (Delta/MLflow) alongside Iceberg scenario notes.
+- `README.md`: includes a docker-compose snippet for Nessie, MinIO, and Dremio to back Iceberg tables.
+
+How to run (Nessie/MinIO/Dremio):
+1) Use the docker-compose snippet in `ch11/iceberg/README.md` to start Nessie (catalog), MinIO (storage), and Dremio.
+2) Apply the SQL in `dremio-iceberg-nessie.sql` inside Dremio to register the catalog/bucket.
+3) Explore Iceberg tables via Dremio UI; adapt the notebook for ML workflow context if desired.

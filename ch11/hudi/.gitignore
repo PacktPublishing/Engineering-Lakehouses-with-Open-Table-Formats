@@ -1,0 +1,8 @@
+# Local Hudi tables and checkpoints
+data/
+
+# Spark temp directories
+tmp/
+
+# Jupyter checkpoints
+notebooks/.ipynb_checkpoints/
