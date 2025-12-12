@@ -1,4 +1,4 @@
-# Delta Lake on Spark + Minio Docker Environment
+# Delta Lake on Spark
 
 ## Quickstart
 
