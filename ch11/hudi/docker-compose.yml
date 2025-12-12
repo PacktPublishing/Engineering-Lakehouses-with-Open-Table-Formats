@@ -1,0 +1,108 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      # Inside docker network use kafka:29092; from host use localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  mysql-primary:
+    image: mysql:8.0
+    command:
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --binlog-row-image=FULL
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: retail
+      MYSQL_USER: debezium
+      MYSQL_PASSWORD: dbz_password
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./scripts:/scripts:ro
+
+  connect:
+    image: debezium/connect:2.6
+    depends_on:
+      - kafka
+      - mysql-primary
+      - kafka-init
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: "kafka:29092"
+      GROUP_ID: "1"
+      CONFIG_STORAGE_TOPIC: "connect-configs"
+      OFFSET_STORAGE_TOPIC: "connect-offsets"
+      STATUS_STORAGE_TOPIC: "connect-statuses"
+
+      # Important: emit schemaless JSON so Spark can parse before/after/op directly
+      # Debezium/Kafka Connect support disabling schema wrapper via schemas.enable=false
+      KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+
+      REST_ADVERTISED_HOST_NAME: "connect"
+    volumes:
+      - ./connect/connectors:/connectors
+
+  connect-init:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      - connect
+      - kafka-init
+    volumes:
+      - ./connect/connectors:/connectors:ro
+      - ./scripts:/scripts:ro
+    entrypoint: ["/bin/sh", "/scripts/register_connector.sh"]
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/bash", "-c"]
+    command: [ "sleep 15 && kafka-topics --create --if-not-exists --topic globalmart.retail.products --bootstrap-server kafka:29092 --partitions 1 --replication-factor 1 && kafka-topics --bootstrap-server kafka:29092 --describe --topic globalmart.retail.products" ]
+    restart: "no"
+
+  jupyter:
+    build: .
+    container_name: ch11-hudi-spark-notebook
+    depends_on:
+      - kafka
+      - kafka-init
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - KAFKA_BOOTSTRAP=kafka:29092
+      - KAFKA_TOPIC=globalmart.retail.products
+      - HUDI_BASE_PATH=/data/hudi/products_hudi
+      - CHECKPOINT_PATH=/data/checkpoints/products
+    # Disable auth token so the Lab UI is reachable at http://localhost:8888 without prompts
+    command: start-notebook.sh --ServerApp.token='' --ServerApp.password='' --ServerApp.allow_origin='*' --ServerApp.allow_remote_access=True
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./data:/data
