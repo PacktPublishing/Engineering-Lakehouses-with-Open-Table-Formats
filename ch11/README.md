@@ -25,10 +25,16 @@ Folder: `ch11/iceberg`
 
 What's inside:
 - `dremio-iceberg-nessie.sql`: SQL to configure Dremio with Nessie + MinIO for Iceberg.
-- `Visionary_Telecom_Delta_MLFlow.ipynb`: notebook showing a lakehouse ML workflow (Delta/MLflow) alongside Iceberg scenario notes.
 - `README.md`: includes a docker-compose snippet for Nessie, MinIO, and Dremio to back Iceberg tables.
 
 How to run (Nessie/MinIO/Dremio):
 1) Use the docker-compose snippet in `ch11/iceberg/README.md` to start Nessie (catalog), MinIO (storage), and Dremio.
 2) Apply the SQL in `dremio-iceberg-nessie.sql` inside Dremio to register the catalog/bucket.
 3) Explore Iceberg tables via Dremio UI; adapt the notebook for ML workflow context if desired.
+
+## Delta Lake demo
+
+Folder: `ch11/deltalake`
+
+What's inside:
+- `Visionary_Telecom_Delta_MLFlow.ipynb`: notebook showing a lakehouse ML workflow (Delta/MLflow) alongside Iceberg scenario notes.
