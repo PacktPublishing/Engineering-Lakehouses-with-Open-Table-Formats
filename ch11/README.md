@@ -19,7 +19,7 @@ How to run:
 3) Quick demo: run seed (if empty) → optional batch demo → snapshot/changelog/validation cells.
 4) Full CDC: run the streaming cell (~60s), in another terminal run `docker compose exec mysql-primary bash /scripts/pump_mysql_changes.sh`, then snapshot/changelog/validation.
 
-## Iceberg demo
+## Iceberg demo (Acme Manufacturing)
 
 Folder: `ch11/iceberg`
 
@@ -32,7 +32,7 @@ How to run (Nessie/MinIO/Dremio):
 2) Apply the SQL in `dremio-iceberg-nessie.sql` inside Dremio to register the catalog/bucket.
 3) Explore Iceberg tables via Dremio UI; adapt the notebook for ML workflow context if desired.
 
-## Delta Lake demo
+## Delta Lake demo (Visionary Telecom)
 
 Folder: `ch11/deltalake`
 
